@@ -25,7 +25,47 @@ document.addEventListener("DOMContentLoaded", () => {
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          <div class="participants">
+            <h5>Participants</h5>
+            <ul class="participant-list"></ul>
+          </div>
         `;
+
+        // Populate participant list
+        const participantList = activityCard.querySelector(".participant-list");
+        if (Array.isArray(details.participants) && details.participants.length > 0) {
+          details.participants.forEach((email) => {
+            const li = document.createElement("li");
+            li.className = "participant-item";
+
+            // Create avatar with initials (from email before @ or full email fallback)
+            const namePart = (email || "").split("@")[0] || "";
+            const initials = namePart
+              .split(/[\.\-_]/)
+              .map(s => s.charAt(0))
+              .filter(Boolean)
+              .slice(0,2)
+              .join("")
+              .toUpperCase();
+
+            const avatar = document.createElement("span");
+            avatar.className = "avatar";
+            avatar.textContent = initials || "?";
+
+            const spanEmail = document.createElement("span");
+            spanEmail.className = "participant-email";
+            spanEmail.textContent = email;
+
+            li.appendChild(avatar);
+            li.appendChild(spanEmail);
+            participantList.appendChild(li);
+          });
+        } else {
+          const emptyLi = document.createElement("li");
+          emptyLi.className = "no-participants";
+          emptyLi.textContent = "No participants yet.";
+          participantList.appendChild(emptyLi);
+        }
 
         activitiesList.appendChild(activityCard);
 
